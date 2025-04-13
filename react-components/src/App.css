@@ -1,11 +1,6 @@
 .App {
   text-align: center;
 }
-
-.table-container{
-  display: grid;
-  place-content: center;
-}
 table{
   border-collapse:collapse
 }
@@ -13,4 +8,17 @@ table{
 td,th{
   border :1px solid #ddd;
   padding:0.5rem
+}
+
+.table-container{
+  display: grid;
+  place-content: center;
+}
+.search-container{
+    margin: 0.5rem;
+}
+.search-container input{
+  height: 2rem;
+  width: 20rem;
+  padding: 0.3rem;
 }

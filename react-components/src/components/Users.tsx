@@ -68,7 +68,7 @@ export function Users() {
 
   return (
     <div>
-      <h1>useres</h1>
+      <h1>users</h1>
       <Table data={state.users} />
     </div>
   );
