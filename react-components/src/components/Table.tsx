@@ -4,10 +4,12 @@ import Search from './Search';
 
 interface TableProps {
   data: User[];
+  rowsPerPage?:number
 }
 
-export function Table({ data }: TableProps) {
+export function Table({ data,rowsPerPage = 5 }: TableProps) {
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [page,setPage] = useState(1);
   const [sortData, setSortData] = useState({
     order:"asc",
     fieldName:""
@@ -23,7 +25,13 @@ export function Table({ data }: TableProps) {
       order:prev.order === "asc" ?"dsc":"asc"
     }));
   };
+   const totaPages = Math.ceil(data.length/rowsPerPage); 
+   const handlePageChange = (dir:string)=>{
+        
+    if(dir === "next" && page<totaPages  ) setPage(prev=>prev+1);
 
+    if(dir === "prev" && page>1) setPage(prev=>prev-1);
+   }
 
   const searchedData = data.filter((item) =>
     item.name.includes(debouncedSearch)
@@ -47,7 +55,9 @@ export function Table({ data }: TableProps) {
     }
 
     return 1;
-  })
+  });
+
+  const paginatedData = sortedData.filter((item,i)=>(i< (page * rowsPerPage)) && (i>=(page-1)*rowsPerPage))
 
   return (
     <div className="table-container">
@@ -77,7 +87,7 @@ export function Table({ data }: TableProps) {
           </tr>
         </thead>
         <tbody>
-          {sortedData.map((row) => (
+          {paginatedData.map((row) => (
             <tr key={row.id}>
               {columns.map((col) => (
                 <td key={col}>
@@ -90,6 +100,11 @@ export function Table({ data }: TableProps) {
           ))}
         </tbody>
       </table>
+      <div className="page-container">
+        <button disabled={page === 1} onClick={handlePageChange.bind(null,"prev")}>prev</button>
+        <button disabled ={page === totaPages} onClick={handlePageChange.bind(null,"next")}>next</button>
+        <p>page - {page}</p>
+      </div>
     </div>
   );
 }
