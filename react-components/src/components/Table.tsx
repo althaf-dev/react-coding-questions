@@ -8,14 +8,20 @@ interface TableProps {
 
 export function Table({ data }: TableProps) {
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [order, setOrder] = useState('asc');
+  const [sortData, setSortData] = useState({
+    order:"asc",
+    fieldName:""
+  });
 
   const columns = Array.from(
     new Set(data.flatMap((item) => Object.keys(item)))
   );
 
-  const handleSort = () => {
-    setOrder((prev) => (prev === 'asc' ? 'dsc' : 'asc'));
+  const handleSort = (fieldName:string) => {
+    setSortData((prev) => ({
+      fieldName:fieldName,
+      order:prev.order === "asc" ?"dsc":"asc"
+    }));
   };
 
 
@@ -24,19 +30,19 @@ export function Table({ data }: TableProps) {
   );
 
   const sortedData = searchedData.sort((a,b)=>{
-    if(a.name>b.name && order === "asc"){
+    if(a[sortData.fieldName]>b[sortData.fieldName] && sortData.order === "asc"){
         return 1;
     }
 
-    if(a.name<b.name && order === "asc"){
+    if(a[sortData.fieldName]<b[sortData.fieldName] && sortData.order === "asc"){
         return -1;
     }
   
-    if(a.name>b.name && order === "dsc"){
+    if(a[sortData.fieldName]>b[sortData.fieldName] && sortData.order === "dsc"){
         return -1;
     }
 
-    if(a.name<b.name && order === "dsc"){
+    if(a[sortData.fieldName]<b[sortData.fieldName] && sortData.order === "dsc"){
         return 1;
     }
 
@@ -52,15 +58,15 @@ export function Table({ data }: TableProps) {
             {columns.map((col) => (
               <th key={col}>
                 <span>{col}</span>
-                {col === 'name' && (
-                  <button onClick={handleSort}>
+                { (
+                  <button onClick={handleSort.bind(null,col)}>
                     <span
-                      style={{ color: order === 'asc' ? 'purple' : '#ddd' }}
+                      style={{ color: (sortData.order === 'asc' && sortData.fieldName === col) ? 'purple' : '#ddd' }}
                     >
                       {'\u2191'}
                     </span>
                     <span
-                      style={{ color: order === 'dsc' ? 'purple' : '#ddd' }}
+                      style={{ color: (sortData.order === 'dsc' && sortData.fieldName === col) ? 'purple' : '#ddd' }}
                     >
                       {'\u2193'}
                     </span>
